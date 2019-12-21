@@ -1,0 +1,57 @@
+
+[general]
+pidfile="burrow.pid"  # file in which id of running process will be stored
+stdout-logfile="burrow.out" #file path and name to redirect stdout and stderr into.
+access-control-allow-origin="*" #Header value to put in http response
+
+
+
+[logging]
+filename="logs/burrow.log" #Path and file name to write logs into
+level="info" #log level
+maxsize=100 #maximum size of single log file in MB
+maxbackups=30 #maximum number of log file to maintain
+maxage=10 #maximum time to keep log file 
+use-localtime=false  #time to be used while writing logs
+use-compression=true #if true compress rotated log files.
+
+
+
+
+[zookeeper]
+servers=["localhost:2181" ]
+timeout=6 #expiration timeout for zookeeper sessions.
+root-path="/home/sudipbhandari/go/bin/burrow" #full path to zookeeper node that burrow will be allowed to write into.
+
+
+[client-profile.myclient] #this client profile name is myclient
+kafka-version="2.2.0"    #kafka server version
+client-id="burrow-myclient" # a string to be passed to kafka as client Id
+
+
+[httpserver.mylistener]
+address=":8080"  #port to send http request
+
+[storage.mystorage]
+class-name="inmemory"
+intervals=10  #no. of offsets to store for each partition
+expire-group=604800 # no. of seconds after which a group will be purged if it has not commited offset
+
+
+
+[cluster.myclustername]
+class-name="kafka"
+servers=[ "localhost:9092" ]
+client-profile="myclient" #profile name defined as in client profile subheading.
+topic-refresh=10
+offset-refresh=10
+
+
+
+[consumer.myconsumers]
+class-name="kafka"
+cluster="myclustername"  # sub heading name defined in above cluster configuration
+servers=[ "localhost:9092"]
+client-profile="myclient"
+offsets-topic="__consumer_offsets"
+start-latest=true
